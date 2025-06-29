@@ -3,10 +3,13 @@ package io.github.haykam821.sculkprison.game.map;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import io.github.haykam821.sculkprison.Main;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -30,6 +33,7 @@ import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import net.minecraft.world.gen.structure.DimensionPadding;
 import net.minecraft.world.gen.structure.Structure;
@@ -45,6 +49,8 @@ public final class SculkPrisonChunkGenerator extends GameChunkGenerator {
 
 	private static final Identifier PRISON_STARTS_ID = Main.identifier("prison_starts");
 	private static final RegistryKey<StructurePool> PRISON_STARTS = RegistryKey.of(RegistryKeys.TEMPLATE_POOL, PRISON_STARTS_ID);
+
+	private static final BlockState STATE = Blocks.DEEPSLATE_BRICKS.getDefaultState();
 
 	private final Long2ObjectMap<List<StructurePiece>> piecesByChunk = new Long2ObjectOpenHashMap<>();
 
@@ -94,6 +100,22 @@ public final class SculkPrisonChunkGenerator extends GameChunkGenerator {
 	public int getWorldHeight() {
 		// Match the height of the game's dimension type
 		return 256;
+	}
+
+	@Override
+	public CompletableFuture<Chunk> populateNoise(Blender blender, NoiseConfig noiseConfig, StructureAccessor structures, Chunk chunk) {
+		BlockPos.Mutable pos = new BlockPos.Mutable();
+		
+		for (int y = chunk.getBottomY(); y <= chunk.getTopYInclusive(); y += 1) {
+			for (int x = 0; x < 16; x += 1) {
+				for (int z = 0; z < 16; z += 1) {
+					pos.set(x, y, z);
+					chunk.setBlockState(pos, STATE, false);
+				}
+			}
+		}
+
+		return super.populateNoise(blender, noiseConfig, structures, chunk);
 	}
 
 	@Override
