@@ -38,7 +38,7 @@ import xyz.nucleoid.plasmid.api.game.world.generator.GameChunkGenerator;
 
 public final class SculkPrisonChunkGenerator extends GameChunkGenerator {
 	private static final BlockPos ORIGIN = new BlockPos(0, 64, 0);
-	private static final DimensionPadding PADDING = new DimensionPadding(Integer.MAX_VALUE);
+	private static final DimensionPadding PADDING = DimensionPadding.NONE;
 
 	private static final int MAX_DEPTH = 16;
 	private static final int MAX_DISTANCE_FROM_CENTER = 1024;
@@ -88,6 +88,12 @@ public final class SculkPrisonChunkGenerator extends GameChunkGenerator {
 				}
 			}
 		}
+	}
+
+	@Override
+	public int getWorldHeight() {
+		// Match the height of the game's dimension type
+		return 256;
 	}
 
 	@Override
