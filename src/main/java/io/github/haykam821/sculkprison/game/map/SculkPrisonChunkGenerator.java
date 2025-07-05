@@ -110,7 +110,7 @@ public final class SculkPrisonChunkGenerator extends GameChunkGenerator {
 			for (int x = 0; x < 16; x += 1) {
 				for (int z = 0; z < 16; z += 1) {
 					pos.set(x, y, z);
-					chunk.setBlockState(pos, STATE, false);
+					chunk.setBlockState(pos, STATE);
 				}
 			}
 		}
