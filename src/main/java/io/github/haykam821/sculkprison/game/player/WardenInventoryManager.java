@@ -1,6 +1,7 @@
 package io.github.haykam821.sculkprison.game.player;
 
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
@@ -26,30 +27,19 @@ public class WardenInventoryManager {
 		this.activeHelmet = WardenInventoryManager.createArmorStack(registries, Items.LEATHER_HELMET, true);
 	}
 
-	private static void updateInventory(ServerPlayerEntity player) {
-		player.currentScreenHandler.sendContentUpdates();
-		player.playerScreenHandler.onContentChanged(player.getInventory());
-	}
-
 	public void applyTo(ServerPlayerEntity player) {
-		PlayerInventory inventory = player.getInventory();
-
-		inventory.armor.set(3, this.helmet.copy());
-		inventory.armor.set(2, this.chestplate.copy());
-		inventory.armor.set(1, this.leggings.copy());
-		inventory.armor.set(0, this.boots.copy());
-
-		WardenInventoryManager.updateInventory(player);
+		equipSilently(player, EquipmentSlot.HEAD, this.helmet.copy());
+		equipSilently(player, EquipmentSlot.CHEST, this.chestplate.copy());
+		equipSilently(player, EquipmentSlot.LEGS, this.leggings.copy());
+		equipSilently(player, EquipmentSlot.FEET, this.boots.copy());
 	}
 
 	public void applyHelmet(ServerPlayerEntity player) {
-		player.getInventory().armor.set(3, this.helmet.copy());
-		WardenInventoryManager.updateInventory(player);
+		equipSilently(player, EquipmentSlot.HEAD, this.helmet.copy());
 	}
 
 	public void applyActiveHelmet(ServerPlayerEntity player) {
-		player.getInventory().armor.set(3, this.activeHelmet.copy());
-		WardenInventoryManager.updateInventory(player);
+		equipSilently(player, EquipmentSlot.HEAD, this.activeHelmet.copy());
 	}
 
 	private static ItemStack createArmorStack(RegistryWrapper.WrapperLookup registries, ItemConvertible item, boolean active) {
@@ -58,5 +48,10 @@ public class WardenInventoryManager {
 			.setDyeColor(active ? WardenColors.ACTIVE_ARMOR : WardenColors.INACTIVE_ARMOR)
 			.setUnbreakable()
 			.build();
+	}
+
+	private static void equipSilently(ServerPlayerEntity player, EquipmentSlot slot, ItemStack stack) {
+		int slotId = slot.getOffsetEntitySlotId(PlayerInventory.MAIN_SIZE);
+		player.getInventory().setStack(slotId, stack);
 	}
 }

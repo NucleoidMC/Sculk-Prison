@@ -100,7 +100,7 @@ public class WardenData implements Vibrations {
 }
 
 	public void tick() {
-		ServerWorld world = this.player.getServerWorld();
+		ServerWorld world = this.player.getWorld();
 		Random random = this.player.getRandom();
 
 		if (this.phase.getLockTime() <= 0) {
@@ -159,7 +159,7 @@ public class WardenData implements Vibrations {
 	}
 
 	public void createSonicBoom(SonicBoomTarget target) {
-		ServerWorld world = this.player.getServerWorld();
+		ServerWorld world = this.player.getWorld();
 
 		// Determine a line from the warden to the target
 		Vec3d startPos = this.getSonicBoomStartPos();
@@ -217,7 +217,7 @@ public class WardenData implements Vibrations {
 	private void addSonicBoomTarget(SonicBoomTarget target) {
 		if (!this.sonicBoomTargets.contains(target)) {
 			this.sonicBoomTargets.add(target);
-			target.attach(this, this.player.getServerWorld());
+			target.attach(this, this.player.getWorld());
 		}
 	}
 
@@ -336,7 +336,7 @@ public class WardenData implements Vibrations {
 	}
 
 	public void updateEventHandler(BiConsumer<EntityGameEventHandler<?>, ServerWorld> callback) {
-		callback.accept(this.gameEventHandler, this.player.getServerWorld());
+		callback.accept(this.gameEventHandler, this.player.getWorld());
 	}
 
 	public boolean canProduceVibration(ServerWorld world, BlockPos pos, RegistryEntry<GameEvent> event, Emitter emitter) {
